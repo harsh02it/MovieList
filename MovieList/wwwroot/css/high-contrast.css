@@ -1,0 +1,78 @@
+﻿
+body {
+    background-color: black;
+    color: white;
+}
+
+.navbar {
+    background-color: #222;
+    color: white;
+}
+
+.navbar .nav-link {
+    color: yellow;
+}
+
+.navbar .nav-link:hover {
+    color: lightgreen;
+}
+
+.card {
+    background-color: #333;
+    color: white;
+    border: none;
+}
+
+.card-header {
+    background-color: #444;
+    color: white;
+}
+
+.table {
+    background-color: #444;
+    color: white;
+}
+
+.table th {
+    background-color: #555;
+    color: white;
+}
+
+.table td {
+    background-color: #333;
+}
+
+.btn-primary {
+    background-color: yellow;
+    color: black;
+}
+
+.btn-secondary {
+    background-color: gray;
+    color: white;
+}
+
+h1, h2, h3, h4 {
+    color: white;
+}
+
+a {
+    color: yellow;
+}
+
+a:hover {
+    color: lightgreen;
+}
+
+.navbar {
+    background-color: #222;
+    color: white;
+}
+
+.navbar .nav-link {
+    color: yellow;
+}
+
+.navbar .nav-link:hover {
+    color: lightgreen;
+}

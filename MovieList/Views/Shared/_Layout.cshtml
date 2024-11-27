@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" id="theme-style" />
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">My Movie List</a>
+            <div>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link mr-4" asp-controller="Home" asp-action="Index">Movies List</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mr-4" asp-controller="Genres" asp-action="Index">Genres List</a>
+                    </li>
+                    <li class="nav-item">
+                        <button id="theme-toggle" class="btn btn-secondary">Toggle High Contrast</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    @RenderBody()
+
+    @RenderSection("Scripts", required: false)
+    <script>
+        document.getElementById('theme-toggle').addEventListener('click', function () {
+            var themeStyle = document.getElementById('theme-style');
+            if (themeStyle.getAttribute('href') === '/css/site.css') {
+                themeStyle.setAttribute('href', '/css/high-contrast.css');
+                localStorage.setItem('theme', 'high-contrast');
+            } else {
+                themeStyle.setAttribute('href', '/css/site.css');
+                localStorage.setItem('theme', 'default');
+            }
+        });
+
+        window.onload = function () {
+            var theme = localStorage.getItem('theme');
+            if (theme === 'high-contrast') {
+                document.getElementById('theme-style').setAttribute('href', '/css/high-contrast.css');
+            }
+        };
+    </script>
+</body>
+</html>
