@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using MovieList.Models;
+using MovieList.Models.Data;
 
 namespace MovieList.Controllers
 {
@@ -43,7 +44,7 @@ namespace MovieList.Controllers
             else
             {
                 ViewBag.Action = (movie.MovieId == 0) ? "Add" : "Edit";
-               ViewBag.Genres = context.Genres.OrderBy(g => g.Name).ToList();
+                ViewBag.Genres = context.Genres.OrderBy(g => g.Name).ToList();
                 return View(movie);
             }
         }

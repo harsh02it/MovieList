@@ -1,45 +1,51 @@
-﻿
-body {
+﻿body {
+    background-color: black;
+    color: white;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.navbar {
     background-color: black;
     color: white;
 }
 
-.navbar {
-    background-color: #222;
+.navbar .nav-link {
     color: white;
 }
 
-.navbar .nav-link {
-    color: yellow;
+.navbar-brand {
+    color: white;
 }
 
 .navbar .nav-link:hover {
-    color: lightgreen;
+    color: yellow;
 }
 
 .card {
-    background-color: #333;
+    background-color: black;
     color: white;
-    border: none;
+    border: 2px solid white;
 }
 
 .card-header {
-    background-color: #444;
     color: white;
+    border-bottom: 2px solid white;
 }
 
 .table {
-    background-color: #444;
+    background-color: black;
     color: white;
+    border: 2px solid white;
 }
 
 .table th {
-    background-color: #555;
-    color: white;
+    background-color: yellow !important;
+    color: black !important;
 }
 
 .table td {
-    background-color: #333;
+    background-color: black;
 }
 
 .btn-primary {
@@ -48,31 +54,22 @@ body {
 }
 
 .btn-secondary {
-    background-color: gray;
-    color: white;
-}
-
-h1, h2, h3, h4 {
-    color: white;
-}
-
-a {
+    background-color: black;
     color: yellow;
+    border: 2px solid white;
+}
+
+.btn-primary, .btn-secondary, .btn-warning, .btn-danger {
+    font-weight: 900;
+}
+
+.btn-primary:hover, .btn-secondary:hover, .btn-warning:hover, .btn-danger:hover, .btn-info:hover {
+    background-color: black;
+    color: white;
+    border: 2px solid yellow;
+    transform: scale(1.1);
 }
 
 a:hover {
-    color: lightgreen;
-}
-
-.navbar {
-    background-color: #222;
-    color: white;
-}
-
-.navbar .nav-link {
     color: yellow;
-}
-
-.navbar .nav-link:hover {
-    color: lightgreen;
 }

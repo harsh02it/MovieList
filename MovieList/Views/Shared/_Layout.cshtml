@@ -22,14 +22,16 @@
                     <li class="nav-item">
                         <button id="theme-toggle" class="btn btn-secondary">Toggle High Contrast</button>
                     </li>
+                    <partial name="_LoginPartial" />
                 </ul>
             </div>
         </div>
     </nav>
 
-    @RenderBody()
-
-    @RenderSection("Scripts", required: false)
+    <div class="container mt-4">
+        @RenderBody()
+        @RenderSection("Scripts", required: false)
+    </div>
     <script>
         document.getElementById('theme-toggle').addEventListener('click', function () {
             var themeStyle = document.getElementById('theme-style');

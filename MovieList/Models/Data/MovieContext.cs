@@ -1,13 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Emit;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
-namespace MovieList.Models
+namespace MovieList.Models.Data
 {
-    public class MovieContext : DbContext
+    public class MovieContext : IdentityDbContext<IdentityUser>
     {
         public MovieContext(DbContextOptions<MovieContext> options)
             : base(options)
-        { }
+        {
+        }
+
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Genre> Genres { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
