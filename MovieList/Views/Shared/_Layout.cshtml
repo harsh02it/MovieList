@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -33,6 +36,7 @@
         @RenderSection("Scripts", required: false)
     </div>
     <script>
+        // Theme toggle logic
         document.getElementById('theme-toggle').addEventListener('click', function () {
             var themeStyle = document.getElementById('theme-style');
             if (themeStyle.getAttribute('href') === '/css/site.css') {
@@ -50,6 +54,23 @@
                 document.getElementById('theme-style').setAttribute('href', '/css/high-contrast.css');
             }
         };
+
+        // Session timeout logic
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <text>
+                let idleTime = 0;
+                setInterval(function () {
+                    idleTime++;
+                    if (idleTime === 1) { // Warn after 2 minutes
+                        alert("You will be logged out in 2 minutes due to inactivity.");
+                    }
+                    if (idleTime > 2) { // Auto logout after 3 minutes total
+                        window.location.href = '/Identity/Account/Logout';
+                    }
+                }, 29999);
+            </text>
+        }
     </script>
 </body>
 </html>

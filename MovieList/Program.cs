@@ -7,69 +7,164 @@ using MovieList.Models;
 using System;
 using Microsoft.AspNetCore.Identity;
 using MovieList.Models.Data;
+using MovieList.Middleware;
+using Microsoft.AspNetCore.Hosting;
 
-var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("MovieContext") ?? throw new InvalidOperationException("Connection string 'MovieContextConnection' not found.");
-
-builder.Services.AddDbContext<MovieContext>(options => options.UseSqlServer(connectionString));
-
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<MovieContext>();
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-
-// Configure the database context with the connection string.
-builder.Services.AddDbContext<MovieContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MovieContext")));
-
-// Add session services
-builder.Services.AddSession(options =>
+namespace MovieList
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(15); // Set the timeout period
-    options.Cookie.HttpOnly = true; // Make the session cookie HTTP only
-    options.Cookie.IsEssential = true; // Make the session cookie essential
-});
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            var host = CreateHostBuilder(args).Build();
+            host.Run();
+        }
 
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.ConfigureServices((context, services) =>
+                    {
+                        services.AddDbContext<MovieContext>(options =>
+                            options.UseSqlServer(context.Configuration.GetConnectionString("MovieContext"))
+                        );
 
-// Configure routing options.
-builder.Services.AddRouting(options =>
-{
-    options.LowercaseUrls = true;
-    options.AppendTrailingSlash = true;
-});
+                        services.AddDefaultIdentity<IdentityUser>(options =>
+                        {
+                            // SignIn settings
+                            options.SignIn.RequireConfirmedAccount = false;
+                        })
+                        .AddRoles<IdentityRole>()
+                        .AddEntityFrameworkStores<MovieContext>();
 
-// Build the app.
-var app = builder.Build();
+                        services.AddControllersWithViews();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
+                        services.AddRouting(options =>
+                        {
+                            options.LowercaseUrls = true;
+                            options.AppendTrailingSlash = true;
+                        });
+
+                        services.AddSession(options =>
+                        {
+                            options.IdleTimeout = TimeSpan.FromSeconds(60 * 0.5);
+                            options.Cookie.HttpOnly = false;
+                            options.Cookie.IsEssential = true;
+                        });
+
+                        services.ConfigureApplicationCookie(options =>
+                        {
+                            options.ExpireTimeSpan = TimeSpan.FromMinutes(1);
+                            options.SlidingExpiration = true;
+                            options.LoginPath = "/Identity/Account/Login";
+                            options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                        });
+
+                    })
+                    .Configure((context, app) =>
+                    {
+                        var env = context.HostingEnvironment;
+                        if (env.IsDevelopment())
+                        {
+                            app.UseDeveloperExceptionPage();
+                        }
+                        else
+                        {
+                            app.UseExceptionHandler("/Home/Error");
+                            app.UseHsts();
+                        }
+
+                        app.UseHttpsRedirection();
+                        app.UseStaticFiles();
+                        app.UseRouting();
+
+                        app.UseAuthentication();
+                        app.UseAuthorization();
+                        app.UseSession();
+
+                        app.UseEndpoints(endpoints =>
+                        {
+                            endpoints.MapControllerRoute(
+                                name: "default",
+                                pattern: "{controller=Home}/{action=Index}/{id?}/{slug?}"
+                            );
+                            endpoints.MapAreaControllerRoute(
+                                name: "Identity",
+                                areaName: "Identity",
+                                pattern: "Identity/{controller=Account}/{action=Login}/{id?}"
+                            );
+                            endpoints.MapRazorPages();
+                        });
+                    });
+                });
+    }
 }
-else
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts(); // Enforces HSTS (HTTP Strict Transport Security).
-}
 
-// Enable middleware for secure HTTP, static files, and routing.
-app.UseHttpsRedirection();
-app.UseStaticFiles();
 
-app.UseAuthentication();
-app.UseAuthorization();
 
-app.UseRouting();
+//var builder = WebApplication.CreateBuilder(args);
+//var connectionString = builder.Configuration.GetConnectionString("MovieContext") ?? throw new InvalidOperationException("Connection string 'MovieContext' not found.");
 
-// Map routes using the simplified MapControllerRoute syntax.
-app.MapControllers();
+//builder.Services.AddDbContext<MovieContext>(options => options.UseSqlServer(connectionString));
 
-app.UseSession();
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<MovieContext>();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}/{slug?}");
+//// Add services to the container.
+//builder.Services.AddControllersWithViews();
 
-app.MapRazorPages();
+//// Configure the database context with the connection string.
+//builder.Services.AddDbContext<MovieContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("MovieContext")));
 
-app.Run();
+//// Add session services
+//builder.Services.AddSession(options =>
+//{
+//    options.IdleTimeout = TimeSpan.FromMinutes(15);
+//    options.Cookie.HttpOnly = true;
+//    options.Cookie.IsEssential = true;
+//});
+
+//// Configure routing options.
+//builder.Services.AddRouting(options =>
+//{
+//    options.LowercaseUrls = true;
+//    options.AppendTrailingSlash = true;
+//});
+
+//// Build the app.
+//var app = builder.Build();
+
+//// Configure the HTTP request pipeline.
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseDeveloperExceptionPage();
+//}
+//else
+//{
+//    app.UseExceptionHandler("/Home/Error");
+//    app.UseHsts(); // Enforces HSTS (HTTP Strict Transport Security).
+//}
+
+//// Enable middleware for secure HTTP, static files, and routing.
+//app.UseHttpsRedirection();
+//app.UseStaticFiles();
+
+//app.UseAuthentication();
+//app.UseAuthorization();
+
+////app.UseMiddleware<SessionTimeoutMiddleware>();
+//app.UseRouting();
+
+//// Map routes using the simplified MapControllerRoute syntax.
+//app.MapControllers();
+
+//app.UseSession();
+
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Home}/{action=Index}/{id?}/{slug?}");
+
+//app.MapRazorPages();
+
+//app.Run();
