@@ -1,6 +1,15 @@
-﻿@model List<Movie>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@model List<Movie>
 @{
     ViewBag.Title = "My Movies";
+}
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div>
+        <span id="timeout-timer" class="navbar-text" style="font-weight: bold;"></span>
+    </div>
 }
 
 <div class="container mt-4">
